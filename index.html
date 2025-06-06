@@ -20,9 +20,6 @@
       justify-content: space-between;
       align-items: center;
     }
-    h1 {
-      margin: 0;
-    }
     .toggle {
       display: flex;
       align-items: center;
@@ -42,10 +39,27 @@
     }
     .item {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.75rem;
+      gap: 1rem;
+      align-items: center;
       border-bottom: 1px solid #ddd;
+      padding: 1rem 0;
+    }
+    .item img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .item-info {
+      flex-grow: 1;
+    }
+    .item-info span {
+      display: block;
+      font-weight: bold;
+    }
+    .price {
+      color: green;
+      margin-top: 0.25rem;
     }
     .button {
       background-color: #007BFF;
@@ -59,7 +73,7 @@
       background-color: #0056b3;
     }
     .cart-item {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
   </style>
 </head>
@@ -76,27 +90,50 @@
   <div class="container">
     <div class="menu">
       <h2>Menu</h2>
-      <div class="item" data-veg="true">
-        <span>Paneer Butter Masala</span>
-        <button class="button" onclick="addToCart('Paneer Butter Masala')">Add</button>
+
+      <!-- Veg -->
+      <div class="item" data-veg="true" data-price="180">
+        <img src="https://source.unsplash.com/80x80/?paneer,curry" alt="Paneer Butter Masala" />
+        <div class="item-info">
+          <span>Paneer Butter Masala</span>
+          <span class="price">₹180</span>
+        </div>
+        <button class="button" onclick="addToCart('Paneer Butter Masala', 180)">Add</button>
       </div>
-      <div class="item" data-veg="false">
-        <span>Chicken Biryani</span>
-        <button class="button" onclick="addToCart('Chicken Biryani')">Add</button>
+
+      <div class="item" data-veg="true" data-price="120">
+        <img src="https://source.unsplash.com/80x80/?veg,burger" alt="Veg Burger" />
+        <div class="item-info">
+          <span>Veg Burger</span>
+          <span class="price">₹120</span>
+        </div>
+        <button class="button" onclick="addToCart('Veg Burger', 120)">Add</button>
       </div>
-      <div class="item" data-veg="true">
-        <span>Veg Burger</span>
-        <button class="button" onclick="addToCart('Veg Burger')">Add</button>
+
+      <!-- Non-Veg -->
+      <div class="item" data-veg="false" data-price="220">
+        <img src="https://source.unsplash.com/80x80/?chicken,biryani" alt="Chicken Biryani" />
+        <div class="item-info">
+          <span>Chicken Biryani</span>
+          <span class="price">₹220</span>
+        </div>
+        <button class="button" onclick="addToCart('Chicken Biryani', 220)">Add</button>
       </div>
-      <div class="item" data-veg="false">
-        <span>Fish Curry</span>
-        <button class="button" onclick="addToCart('Fish Curry')">Add</button>
+
+      <div class="item" data-veg="false" data-price="250">
+        <img src="https://source.unsplash.com/80x80/?fish,curry" alt="Fish Curry" />
+        <div class="item-info">
+          <span>Fish Curry</span>
+          <span class="price">₹250</span>
+        </div>
+        <button class="button" onclick="addToCart('Fish Curry', 250)">Add</button>
       </div>
     </div>
 
     <div class="cart">
       <h2>Cart</h2>
       <div id="cartItems"></div>
+      <h3 id="totalAmount">Total: ₹0</h3>
     </div>
   </div>
 
@@ -104,7 +141,9 @@
     const vegToggle = document.getElementById('vegToggle');
     const menuItems = document.querySelectorAll('.menu .item');
     const cartItemsContainer = document.getElementById('cartItems');
+    const totalAmountElement = document.getElementById('totalAmount');
     let cart = [];
+    let total = 0;
 
     vegToggle.addEventListener('change', () => {
       const isVegOnly = vegToggle.checked;
@@ -114,8 +153,9 @@
       });
     });
 
-    function addToCart(itemName) {
-      cart.push(itemName);
+    function addToCart(itemName, price) {
+      cart.push({ name: itemName, price: price });
+      total += price;
       renderCart();
     }
 
@@ -124,9 +164,10 @@
       cart.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.textContent = `${index + 1}. ${item}`;
+        div.textContent = `${index + 1}. ${item.name} - ₹${item.price}`;
         cartItemsContainer.appendChild(div);
       });
+      totalAmountElement.textContent = `Total: ₹${total}`;
     }
   </script>
 
